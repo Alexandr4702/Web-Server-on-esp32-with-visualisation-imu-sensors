@@ -1891,20 +1891,39 @@ function main() {
   socket.onmessage = function(event) {
     // alert(`[message] Data received from server: ${event.data}`);
     let data = JSON.parse(event.data)
-    translation[0] = data.translation[0];
-    translation[1] = data.translation[1];
-    translation[2] = data.translation[2];
-    // test.updateValue(translation[1]);
-    let test = document.querySelector("#x");
-    let valueElem = test.querySelector(".gman-widget-value");
-    let sliderElem = test.querySelector(".gman-widget-slider");
+    let rotation;
+    let requires_update = false;
 
-    valueElem.textContent = translation[0].toFixed(0);
-    sliderElem.value = translation[0];
+    function setSlidervalue(slider, value)
+    {
+      let test = document.querySelector(slider);
+      let valueElem = test.querySelector(".gman-widget-value");
+      let sliderElem = test.querySelector(".gman-widget-slider");
+      valueElem.textContent = value.toFixed(0);
+      sliderElem.value = value;
+    }
 
-    drawScene();
-    console.log(data.uptime, " ", translation[0]);
-    // console.log(`[message] Data received from server: ${event.data}`);
+    if(data.translation)
+    {
+      translation = data.translation;
+      requires_update = true;
+    }
+
+    if(data.rotation)
+    {
+      rotation = data.rotation;
+      requires_update = true;
+    }
+
+    setSlidervalue("#x", translation[0]);
+    setSlidervalue("#y", translation[1]);
+    setSlidervalue("#z", translation[2]);
+
+    if(requires_update)
+    {
+      drawScene();
+    }
+    console.log(data.uptime, " ");
   };
 
   socket.onclose = function(event) {

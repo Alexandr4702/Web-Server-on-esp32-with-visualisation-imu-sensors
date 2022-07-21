@@ -194,6 +194,7 @@ void async_sender(void*)
                     json test;
                     test["uptime"] = uptime_s;
                     test["translation"] = {sin(uptime_s) * 100.0f , 0.0f, -500.0f};
+                    // test["rotation"] = 228;
 
                     string data = test.dump();
                     uint32_t len = data.size();
