@@ -240,8 +240,8 @@ static void connect_handler(void* arg, esp_event_base_t event_base,
 void async_sender(void*)
 {
     size_t size = 8;
-    int* sockets = reinterpret_cast<int*> (malloc(8 * (sizeof(int))));
-    uint8_t* data = reinterpret_cast<uint8_t*> (malloc(100));
+    int* sockets = new int[size];
+    uint8_t* data = new uint8_t[100];
     while(1)
     {
         size = 8;
