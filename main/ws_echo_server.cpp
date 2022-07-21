@@ -209,7 +209,7 @@ void async_sender(void*)
                         // fprintf(stdout, "Send data len %u \r\n", len);
                     } else
                     {
-                        // fprintf(stdout, "Failed send data len %u \r\n", len);
+                        ESP_LOGE(TAG, "Failed send data len %u ", len);
                     }
                 }
             }
