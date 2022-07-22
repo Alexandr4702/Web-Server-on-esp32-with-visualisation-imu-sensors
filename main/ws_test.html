@@ -1725,6 +1725,21 @@ var m4 = {
     return m4.multiply(m, m4.zRotation(angleInRadians));
   },
 
+  matrixFromQuat: function (q)
+  {
+    return [
+        1 - 2.0 * (q[2] * q[2] + q[3] * q[3]), 2.0 * (q[1]* q[2] - q[3] * q[0])     , 2.0 * (q[1]* q[3] + q[2] * q[0])     , 0,
+        2.0 * (q[1]* q[2] + q[3] * q[0])     , 1 - 2.0 * (q[1] * q[1] + q[3] * q[3]), 2.0 * (q[2]* q[3] - q[1] * q[0])     , 0,
+        2.0 * (q[1]* q[3] - q[2] * q[0])     , 2.0 * (q[2]* q[3] + q[1] * q[0])     , 1 - 2.0 * (q[1] * q[1] + q[2] * q[2]), 0,
+        0                                    , 0                                    , 0                                    , 0
+    ];
+  },
+
+  QuatRotate: function(m, q)
+  {
+    return m4.multiply(m, m4.matrixFromQuat(q));
+  },
+
   scale: function(m, sx, sy, sz) {
     return m4.multiply(m, m4.scaling(sx, sy, sz));
   },
