@@ -1731,18 +1731,29 @@ var m4 = {
         1 - 2.0 * (q[2] * q[2] + q[3] * q[3]), 2.0 * (q[1]* q[2] - q[3] * q[0])     , 2.0 * (q[1]* q[3] + q[2] * q[0])     , 0,
         2.0 * (q[1]* q[2] + q[3] * q[0])     , 1 - 2.0 * (q[1] * q[1] + q[3] * q[3]), 2.0 * (q[2]* q[3] - q[1] * q[0])     , 0,
         2.0 * (q[1]* q[3] - q[2] * q[0])     , 2.0 * (q[2]* q[3] + q[1] * q[0])     , 1 - 2.0 * (q[1] * q[1] + q[2] * q[2]), 0,
-        0                                    , 0                                    , 0                                    , 0
+        0                                    , 0                                    , 0                                    , 1
     ];
   },
 
   QuatRotate: function(m, q)
   {
+    let qnorm = Math.sqrt(q[0]**2 + q[1]**2 +q[2]**2 + q[3]**2);
+    // q = [q[0]/qnorm, q[1] / qnorm, q[2] / qnorm, q[3] / qnorm];
+    q[0] = q[0]/qnorm;
+    q[1] = q[1]/qnorm;
+    q[2] = q[2]/qnorm;
+    q[3] = q[3]/qnorm;
     return m4.multiply(m, m4.matrixFromQuat(q));
   },
 
   scale: function(m, sx, sy, sz) {
     return m4.multiply(m, m4.scaling(sx, sy, sz));
   },
+};
+
+class Quaternion
+{
+
 };
 
 function main() {
@@ -1782,6 +1793,7 @@ function main() {
   var rotation = [degToRad(190), degToRad(40), degToRad(320)];
   var scale = [1, 1, 1];
   var fieldOfViewRadians = degToRad(60);
+  let quat = [1, 0, 0, 0];
 
   drawScene();
 
@@ -1881,9 +1893,12 @@ function main() {
     var zFar = 2000;
     var matrix = m4.perspective(fieldOfViewRadians, aspect, zNear, zFar);
     matrix = m4.translate(matrix, translation[0], translation[1], translation[2]);
-    matrix = m4.xRotate(matrix, rotation[0]);
-    matrix = m4.yRotate(matrix, rotation[1]);
-    matrix = m4.zRotate(matrix, rotation[2]);
+
+    let pi2 = (Math.PI * 2.0);
+    let w = 1 - Math.sqrt((rotation[0] / pi2)**2 + (rotation[1] / pi2)**2 + (rotation[2] / pi2)**2);
+    quat = [w, rotation[0] / pi2, rotation[1] / pi2, rotation[2] / pi2];
+    matrix = m4.QuatRotate(matrix, quat);
+
     matrix = m4.scale(matrix, scale[0], scale[1], scale[2]);
 
     // Set the matrix.
@@ -1924,9 +1939,9 @@ function main() {
       requires_update = true;
     }
 
-    if(data.rotation)
+    if(data.quaternion)
     {
-      rotation = data.rotation;
+      quat = data.rotation;
       requires_update = true;
     }
 
