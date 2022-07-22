@@ -14,6 +14,10 @@
     "bitset": "c",
     "string_view": "c",
     "initializer_list": "c",
-    "regex": "c"
+    "regex": "c",
+    "utility": "cpp",
+    "valarray": "cpp",
+    "*.inc": "cpp",
+    "any": "cpp"
   }
 }

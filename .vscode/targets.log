@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Jul 21 13:12:37 2022
+# Make data base, printed on Fri Jul 22 18:07:32 2022
 
 # Variables
 
@@ -18,12 +18,10 @@ LC_ALL = C
 NO_AT_BRIDGE = 1
 # environment
 GTK_RC_FILES = /etc/gtk/gtkrc:/home/alexander/.gtkrc:/home/alexander/.config/gtkrc
-# makefile (from 'Makefile', line 6)
-PROJECT_NAME := ws_echo_server
 # environment
 CSF_EXCEPTION_PROMPT = 1
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-ec619181-4875-43f1-8cc9-821faec8ee6c.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-2c93e11a-5116-4dfa-8cd8-f7105f7d9b44.sock
 # environment
 CSF_XmlOcafResource = /usr/share/opencascade/resources/XmlOcafResource
 # environment
@@ -77,7 +75,7 @@ XAUTHORITY = /home/alexander/.Xauthority
 # default
 .INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
 # makefile
-MAKEFLAGS = prR
+MAKEFLAGS = pqrR
 # makefile
 CURDIR := /home/alexander/esp_workspace/ws_echo_server
 # environment
@@ -89,7 +87,7 @@ APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 PAM_KWALLET5_LOGIN = /run/user/1000/kwallet5.socket
 # environment
-MFLAGS = -prR
+MFLAGS = -pqrR
 # default
 .SHELLFLAGS := -c
 # environment
@@ -104,14 +102,14 @@ XDG_CONFIG_DIRS = /home/alexander/.config/kdedefaults:/etc/xdg
 XCURSOR_THEME = breeze_cursors
 # environment
 XDG_SESSION_DESKTOP = KDE
-# makefile (from 'Makefile', line 1)
-MAKEFILE_LIST := Makefile
+# makefile
+MAKEFILE_LIST := 
 # automatic
 @F = $(notdir $@)
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 3154
+VSCODE_PID = 2980
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
@@ -121,7 +119,7 @@ CSF_XSMessage = /usr/share/opencascade/resources/XSMessage
 # environment
 DRAWDEFAULT = /usr/share/opencascade/resources/DrawResources/DrawDefault
 # environment
-SESSION_MANAGER = local/alexander-pc:@/tmp/.ICE-unix/746,unix/alexander-pc:/tmp/.ICE-unix/746
+SESSION_MANAGER = local/alexander-pc:@/tmp/.ICE-unix/745,unix/alexander-pc:/tmp/.ICE-unix/745
 # automatic
 *F = $(notdir $*)
 # environment
@@ -190,8 +188,6 @@ DESKTOP_SESSION = plasma
 ORIGINAL_XDG_CURRENT_DESKTOP = KDE
 # 'override' directive
 GNUMAKEFLAGS := 
-# makefile (from 'Makefile', line 8)
-EXTRA_COMPONENT_DIRS = $(IDF_PATH)/examples/common_components/protocol_examples_common
 # environment
 QT_SCREEN_SCALE_FACTORS = eDP-1=1.75;HDMI-1=1.75;DP-1=1.75;DP-2=1.75;
 # environment
@@ -203,7 +199,7 @@ XDG_VTNR = 1
 # makefile
 .DEFAULT_GOAL := 
 # environment
-SYSTEMD_EXEC_PID = 643
+SYSTEMD_EXEC_PID = 642
 # environment
 CSF_TObjMessage = /usr/share/opencascade/resources/TObj
 # environment
@@ -267,7 +263,7 @@ KDE_SESSION_VERSION = 5
 # environment
 KDE_FULL_SESSION = true
 # variable set hash-table stats:
-# Load=128/1024=12%, Rehash=0, Collisions=10/155=6%
+# Load=126/1024=12%, Rehash=0, Collisions=10/153=7%
 
 # Pattern-specific Variable Values
 
@@ -275,9 +271,9 @@ KDE_FULL_SESSION = true
 
 # Directories
 
-# . (device 66306, inode 57803059): 16 files, no impossibilities.
+# . (device 66306, inode 57803059): 11 files, no impossibilities.
 
-# 16 files, no impossibilities in 1 directories.
+# 11 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -287,22 +283,13 @@ KDE_FULL_SESSION = true
 
 # Not a target:
 Makefile:
-#  Implicit rule search has not been done.
-#  Last modified 2022-07-03 17:42:20.308589211
-#  File has not been updated.
-
-# Not a target:
-/make/project.mk:
 #  Implicit rule search has been done.
 #  File does not exist.
-#  File has not been updated.
+#  File has been updated.
+#  Failed to be updated.
 
 # Not a target:
 .DEFAULT:
- 
-Makefile:10: /make/project.mk: No such file or directory
-make: *** No rule to make target '/make/project.mk'.  Stop.
-
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -310,24 +297,41 @@ make: *** No rule to make target '/make/project.mk'.  Stop.
 # Not a target:
 all:
 #  Command line target.
-#  Implicit rule search has not been done.
-#  Modification time never checked.
+#  Implicit rule search has been done.
+#  File does not exist.
 #  File has not been updated.
 
+# Not a target:
+makefile:
+#  Implicit rule search has been done.
+#  File does not exist.
+ 
+make: *** No rule to make target 'all'.  Stop.
+
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+GNUmakefile:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
 # files hash-table stats:
-# Load=5/1024=0%, Rehash=0, Collisions=0/16=0%
+# Load=6/1024=1%, Rehash=0, Collisions=0/15=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 22 / storage = 238 B / avg = 10 B
-# current buf: size = 8162 B / used = 238 B / count = 22 / avg = 10 B
+# strcache buffers: 1 (0) / strings = 19 / storage = 162 B / avg = 8 B
+# current buf: size = 8162 B / used = 162 B / count = 19 / avg = 8 B
 
-# strcache performance: lookups = 27 / hit rate = 18%
+# strcache performance: lookups = 22 / hit rate = 13%
 # hash-table stats:
-# Load=22/8192=0%, Rehash=0, Collisions=0/27=0%
-# Finished Make data base on Thu Jul 21 13:12:37 2022
+# Load=19/8192=0%, Rehash=0, Collisions=0/22=0%
+# Finished Make data base on Fri Jul 22 18:07:32 2022
 
  
