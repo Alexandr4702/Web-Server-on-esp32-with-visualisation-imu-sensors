@@ -1911,7 +1911,8 @@ function main() {
     gl.drawArrays(primitiveType, offset, count);
   }
 
-  let socket = new WebSocket("ws://192.168.31.185/ws");
+  let host_addres = window.location.host;
+  let socket = new WebSocket("ws://" + host_addres + "/ws");
 
   socket.onopen = function(e) {
     // alert("[open] Connection established");
