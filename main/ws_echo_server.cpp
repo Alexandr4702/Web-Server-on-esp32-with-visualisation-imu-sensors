@@ -17,12 +17,20 @@
 #include "esp_netif.h"
 #include "esp_eth.h"
 #include "protocol_examples_common.h"
+#include "esp_http_server.h"
 
 #include <esp_http_server.h>
 
 #include <stdio.h>
 
 #include "single_include/nlohmann/json.hpp"
+
+#include "driver/i2c.h"
+
+extern "C"
+{
+#include "mpu6050/mpu6050.h"
+}
 
 void async_sender(void*);
 esp_err_t my_ws_handler(httpd_req_t *req);
@@ -218,8 +226,47 @@ void async_sender(void*)
         vTaskDelay(10 / portTICK_PERIOD_MS);
     }
 }
+
 extern "C"
 {
+
+static void start_imu(void*)
+{
+    i2c_config_t conf = {
+	.mode = I2C_MODE_MASTER,
+	.sda_io_num = 21,
+	.scl_io_num = 22,
+	.sda_pullup_en = GPIO_PULLUP_ENABLE,
+	.scl_pullup_en = GPIO_PULLUP_ENABLE,
+	.master = { 400000 },
+    };
+    i2c_param_config(I2C_NUM_0, &conf);
+    i2c_driver_install(I2C_NUM_0, I2C_MODE_MASTER, 0, 0, 0);
+
+    mpu6050_init();
+    mpu6050_set_i2c_master_mode_enabled(true);
+    mpu6050_reset_sensors();
+    mpu6050_set_fifo_enabled(true);
+
+    // if (!mpu6050_test_connection())
+    // {
+    //     ESP_LOGE("IMU", "Fatal: can't create a connection!");
+    //     vTaskDelete(NULL);
+    // }
+
+    ESP_LOGI("IMU", "Address of the 1st slave: %d", mpu6050_get_slave_address(0));
+    ESP_LOGI("IMU", "Address of the 2nd slave: %d", mpu6050_get_slave_address(1));
+    ESP_LOGI("IMU", "Address of the 3rd slave: %d", mpu6050_get_slave_address(2));
+    ESP_LOGI("IMU", "Address of the 4th slave: %d", mpu6050_get_slave_address(3));
+
+
+    while (true)
+    {
+        ESP_LOGI("IMU", "Acceleration x: %d, y: %d, z: %d", mpu6050_get_acceleration_x(), mpu6050_get_acceleration_y(), mpu6050_get_acceleration_z());
+        vTaskDelay(100 / portTICK_PERIOD_MS);
+    }
+}
+
 void app_main(void)
 {
     ESP_ERROR_CHECK(nvs_flash_init());
@@ -247,5 +294,6 @@ void app_main(void)
     /* Start the server for the first time */
     server = start_webserver();
 
+    xTaskCreate(start_imu, "imu_monitor", 4096, NULL, configMAX_PRIORITIES-6, &async_sender_handler);
 }
 }
