@@ -146,7 +146,7 @@ static httpd_handle_t start_webserver(void)
 static void stop_webserver(httpd_handle_t server)
 {
     // Stop the httpd server
-    vTaskDelete(&async_sender_handler);
+    vTaskDelete(async_sender_handler);
     httpd_stop(server);
 }
 
@@ -210,7 +210,7 @@ void async_sender(void*)
                         // fprintf(stdout, "Send data len %u \r\n", len);
                     } else
                     {
-                        ESP_LOGE(TAG, "Failed send data len %u ", len);
+                        ESP_LOGE(TAG, "Failed send data len %lu ", len);
                     }
                 }
             }
