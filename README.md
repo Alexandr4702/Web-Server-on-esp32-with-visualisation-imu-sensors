@@ -1,52 +1,42 @@
 # ESP32 IMU Web Visualizer
 
-ESP-IDF application that serves a WebGL page directly from an ESP32 and streams
-motion data to it over WebSocket. The firmware reads acceleration from an
-MPU6050 connected over I²C.
+ESP32 reads an MPU6050 motion sensor and displays its data as an interactive 3D
+visualization in a browser. The page is served directly by the ESP32, and sensor
+updates are streamed in real time over WebSocket.
 
-## Architecture
+## Features
 
-```text
-MPU6050 -> Mpu6050Source -> Sample -> JSON -> WebSocket /ws -> WebGL page
-                                      |
-ESP-IDF network -> web_server.cpp -----+---- HTTP / -> embedded ws_test.html
-```
+- MPU6050 acceleration acquisition over I²C
+- Browser-based WebGL visualization
+- Real-time WebSocket updates
+- Automatic connection to the ESP32 hosting the page
+- Support for multiple connected browser clients
+- Manual position, rotation, scale, and field-of-view controls
 
-- `main/app_main.cpp` initializes NVS/networking and owns connection lifecycle.
-- `WebServer` owns the HTTP server and telemetry publishing task.
-- `telemetry::Source` is the sensor abstraction; `Mpu6050Source` reads the IMU over I²C.
-- `telemetry::Sample` keeps sensor data independent from JSON serialization.
-- `main/ws_test.html` contains the embedded WebGL client.
-- `json/` contains the nlohmann/json submodule.
-
-The WebSocket endpoint is derived from the page URL, so no device IP address is
-hard-coded in the browser client.
-
-## Requirements
+## Hardware
 
 - ESP32 development board
-- ESP-IDF (the project follows the ESP-IDF CMake workflow)
-- Python and the toolchain installed by ESP-IDF
-- Wi-Fi credentials available through ESP-IDF example connection settings
+- MPU6050 module
 
-## Clone
+Default wiring:
 
-The JSON dependency is a Git submodule:
+| MPU6050 | ESP32 |
+|---------|-------|
+| SDA     | GPIO 21 |
+| SCL     | GPIO 22 |
+| VCC     | 3.3 V |
+| GND     | GND |
+
+## Build and run
+
+Clone the repository with its dependencies:
 
 ```bash
-git clone --recurse-submodules <repository-url>
+git clone --recurse-submodules https://github.com/Alexandr4702/Web-Server-on-esp32-with-visualisation-imu-sensors.git
 cd Web-Server-on-esp32-with-visualisation-imu-sensors
 ```
 
-For an existing clone:
-
-```bash
-git submodule update --init --recursive
-```
-
-## Configure, build, and flash
-
-Open an ESP-IDF shell, then run:
+In an ESP-IDF shell:
 
 ```bash
 idf.py set-target esp32
@@ -55,38 +45,13 @@ idf.py build
 idf.py -p <serial-port> flash monitor
 ```
 
-In `menuconfig`, configure the Wi-Fi SSID and password under the example
-connection settings. Replace `<serial-port>` with the board port, such as
-`COM5` on Windows or `/dev/ttyUSB0` on Linux.
+Configure the Wi-Fi SSID and password in `menuconfig`. After the ESP32 connects,
+open its IP address in a modern browser:
 
-After the board receives an IP address, open `http://<esp32-ip>/` in a modern
-browser. The page connects to `ws://<esp32-ip>/ws` automatically.
-
-## Telemetry protocol
-
-The server publishes a JSON object approximately every 50 ms:
-
-```json
-{
-  "uptime": 12.34,
-  "translation": [10.0, 0.0, -500.0],
-  "quaternion": [1.0, 0.0, 0.0, 0.0]
-}
+```text
+http://<esp32-ip>/
 ```
 
-`translation` is `[x, y, z]`. `quaternion` is `[w, x, y, z]` and should be
-normalized. Keep this schema stable when replacing the MPU6050 implementation.
-
-## Connecting a real IMU
-
-The MPU6050 integration uses SDA on GPIO 21 and SCL on GPIO 22. To support a
-different sensor, provide another `telemetry::Source` implementation. Keeping
-sensor access out of the HTTP task makes it possible to test and change the IMU
-independently of the transport and visualization.
-
-## Known limitations
-
-- The visualization page is currently a single large embedded HTML file.
-- Samples are sent independently to every connected WebSocket client.
-- There are no host-side tests yet; verification requires an ESP-IDF toolchain
-  and, for end-to-end behavior, an ESP32 board.
+The page connects to the WebSocket endpoint automatically and starts displaying
+sensor updates. If the MPU6050 is unavailable, the visualization remains
+accessible but receives neutral sensor values.
