@@ -32,8 +32,8 @@ Default wiring:
 Clone the repository with its dependencies:
 
 ```bash
-git clone --recurse-submodules https://github.com/Alexandr4702/Web-Server-on-esp32-with-visualisation-imu-sensors.git
-cd Web-Server-on-esp32-with-visualisation-imu-sensors
+git clone --recurse-submodules https://github.com/Alexandr4702/esp32-imu-web-visualizer.git
+cd esp32-imu-web-visualizer
 ```
 
 In an ESP-IDF shell:
