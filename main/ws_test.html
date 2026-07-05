@@ -179,6 +179,9 @@ Drag sliders to translate, rotate, and scale.
     <div id="angleX"></div>
     <div id="angleY"></div>
     <div id="angleZ"></div>
+    <div id="scaleX"></div>
+    <div id="scaleY"></div>
+    <div id="scaleZ"></div>
   </div>
 </div>
 </body>
@@ -1738,12 +1741,11 @@ var m4 = {
   QuatRotate: function(m, q)
   {
     let qnorm = Math.sqrt(q[0]**2 + q[1]**2 +q[2]**2 + q[3]**2);
-    // q = [q[0]/qnorm, q[1] / qnorm, q[2] / qnorm, q[3] / qnorm];
-    q[0] = q[0]/qnorm;
-    q[1] = q[1]/qnorm;
-    q[2] = q[2]/qnorm;
-    q[3] = q[3]/qnorm;
-    return m4.multiply(m, m4.matrixFromQuat(q));
+    if (!Number.isFinite(qnorm) || qnorm === 0) {
+      return m;
+    }
+    const normalized = q.map(component => component / qnorm);
+    return m4.multiply(m, m4.matrixFromQuat(normalized));
   },
 
   scale: function(m, sx, sy, sz) {
@@ -1751,10 +1753,18 @@ var m4 = {
   },
 };
 
-class Quaternion
-{
-
-};
+function quaternionFromEuler(rotation) {
+  const [x, y, z] = rotation.map(angle => angle / 2);
+  const cx = Math.cos(x), sx = Math.sin(x);
+  const cy = Math.cos(y), sy = Math.sin(y);
+  const cz = Math.cos(z), sz = Math.sin(z);
+  return [
+    cx * cy * cz + sx * sy * sz,
+    sx * cy * cz - cx * sy * sz,
+    cx * sy * cz + sx * cy * sz,
+    cx * cy * sz - sx * sy * cz,
+  ];
+}
 
 function main() {
   // Get A WebGL context
@@ -1793,7 +1803,7 @@ function main() {
   var rotation = [degToRad(190), degToRad(40), degToRad(320)];
   var scale = [1, 1, 1];
   var fieldOfViewRadians = degToRad(60);
-  let quat = [1, 0, 0, 0];
+  let quat = quaternionFromEuler(rotation);
 
   drawScene();
 
@@ -1814,6 +1824,7 @@ function main() {
       var angleInDegrees = ui.value;
       var angleInRadians = angleInDegrees * Math.PI / 180;
       rotation[index] = angleInRadians;
+      quat = quaternionFromEuler(rotation);
       drawScene();
     };
   }
@@ -1894,9 +1905,6 @@ function main() {
     var matrix = m4.perspective(fieldOfViewRadians, aspect, zNear, zFar);
     matrix = m4.translate(matrix, translation[0], translation[1], translation[2]);
 
-    let pi2 = (Math.PI * 2.0);
-    let w = 1 - Math.sqrt((rotation[0] / pi2)**2 + (rotation[1] / pi2)**2 + (rotation[2] / pi2)**2);
-    quat = [w, rotation[0] / pi2, rotation[1] / pi2, rotation[2] / pi2];
     matrix = m4.QuatRotate(matrix, quat);
 
     matrix = m4.scale(matrix, scale[0], scale[1], scale[2]);
@@ -1911,7 +1919,8 @@ function main() {
     gl.drawArrays(primitiveType, offset, count);
   }
 
-  let socket = new WebSocket("ws://192.168.31.185/ws");
+  const websocketProtocol = location.protocol === "https:" ? "wss:" : "ws:";
+  let socket = new WebSocket(`${websocketProtocol}//${location.host}/ws`);
 
   socket.onopen = function(e) {
     // alert("[open] Connection established");
@@ -1921,7 +1930,6 @@ function main() {
   socket.onmessage = function(event) {
     // alert(`[message] Data received from server: ${event.data}`);
     let data = JSON.parse(event.data)
-    let rotation;
     let requires_update = false;
 
     function setSlidervalue(slider, value)
@@ -1941,7 +1949,7 @@ function main() {
 
     if(data.quaternion)
     {
-      quat = data.rotation;
+      quat = data.quaternion;
       requires_update = true;
     }
 
