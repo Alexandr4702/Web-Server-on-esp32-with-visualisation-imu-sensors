@@ -19,5 +19,6 @@
     "valarray": "cpp",
     "*.inc": "cpp",
     "any": "cpp"
-  }
+  },
+  "idf.currentSetup": "C:\\esp\\v6.0.2\\esp-idf"
 }
