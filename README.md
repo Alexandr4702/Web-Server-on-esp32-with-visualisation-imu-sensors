@@ -8,7 +8,7 @@ updates are streamed in real time over WebSocket.
 
 - MPU6050 acceleration acquisition over I²C
 - Browser-based WebGL visualization
-- Real-time WebSocket updates
+- WebSocket sensor updates at a fixed 100 Hz rate
 - Automatic connection to the ESP32 hosting the page
 - Support for multiple connected browser clients
 - Manual position, rotation, scale, and field-of-view controls
