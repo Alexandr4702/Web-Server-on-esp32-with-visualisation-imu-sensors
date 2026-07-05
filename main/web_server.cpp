@@ -9,7 +9,12 @@ namespace {
 
 constexpr char kTag[] = "web_server";
 constexpr size_t kMaxClients = 8;
-constexpr TickType_t kPublishPeriod = pdMS_TO_TICKS(50);
+constexpr uint32_t kPublishRateHz = 100;
+static_assert(configTICK_RATE_HZ >= kPublishRateHz,
+              "FreeRTOS tick rate is too low for 100 Hz");
+static_assert(configTICK_RATE_HZ % kPublishRateHz == 0,
+              "FreeRTOS tick rate must be divisible by 100 Hz");
+constexpr TickType_t kPublishPeriod = configTICK_RATE_HZ / kPublishRateHz;
 
 }  // namespace
 
@@ -67,6 +72,7 @@ void WebServer::publisher_entry(void *context) {
 
 void WebServer::publish_loop() {
     int clients[kMaxClients];
+    TickType_t last_wake_time = xTaskGetTickCount();
 
     while (true) {
         const std::string payload =
@@ -96,7 +102,7 @@ void WebServer::publish_loop() {
                 }
             }
         }
-        vTaskDelay(kPublishPeriod);
+        vTaskDelayUntil(&last_wake_time, kPublishPeriod);
     }
 }
 
