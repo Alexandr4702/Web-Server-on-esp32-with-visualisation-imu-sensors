@@ -1,4 +1,5 @@
 #include "web_server.hpp"
+#include "mpu6050_source.hpp"
 
 #include "esp_event.h"
 #include "esp_eth.h"
@@ -11,7 +12,7 @@
 namespace {
 
 constexpr char kTag[] = "imu_app";
-telemetry::DemoSource telemetry_source;
+telemetry::Mpu6050Source telemetry_source;
 WebServer web_server(telemetry_source);
 
 void on_connected(void *context, esp_event_base_t, int32_t, void *) {
@@ -37,6 +38,7 @@ extern "C" void app_main(void) {
     ESP_ERROR_CHECK(nvs_result);
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
+    ESP_ERROR_CHECK(telemetry_source.initialize());
     ESP_ERROR_CHECK(example_connect());
 
 #ifdef CONFIG_EXAMPLE_CONNECT_WIFI

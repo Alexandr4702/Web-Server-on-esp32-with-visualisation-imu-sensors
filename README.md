@@ -1,20 +1,20 @@
 # ESP32 IMU Web Visualizer
 
 ESP-IDF application that serves a WebGL page directly from an ESP32 and streams
-motion data to it over WebSocket. The current firmware generates demo movement;
-`main/telemetry.cpp` is the intended integration point for a real IMU.
+motion data to it over WebSocket. The firmware reads acceleration from an
+MPU6050 connected over I²C.
 
 ## Architecture
 
 ```text
-IMU / demo source -> telemetry.cpp -> JSON -> WebSocket /ws -> WebGL page
+MPU6050 -> Mpu6050Source -> Sample -> JSON -> WebSocket /ws -> WebGL page
                                       |
 ESP-IDF network -> web_server.cpp -----+---- HTTP / -> embedded ws_test.html
 ```
 
 - `main/app_main.cpp` initializes NVS/networking and owns connection lifecycle.
 - `WebServer` owns the HTTP server and telemetry publishing task.
-- `telemetry::Source` is the sensor abstraction; `DemoSource` is its demo implementation.
+- `telemetry::Source` is the sensor abstraction; `Mpu6050Source` reads the IMU over I²C.
 - `telemetry::Sample` keeps sensor data independent from JSON serialization.
 - `main/ws_test.html` contains the embedded WebGL client.
 - `json/` contains the nlohmann/json submodule.
@@ -75,15 +75,14 @@ The server publishes a JSON object approximately every 50 ms:
 ```
 
 `translation` is `[x, y, z]`. `quaternion` is `[w, x, y, z]` and should be
-normalized. Keep this schema stable when replacing the demo source with an IMU.
+normalized. Keep this schema stable when replacing the MPU6050 implementation.
 
 ## Connecting a real IMU
 
-Implement sensor initialization in its own driver/module and replace the demo
-values returned by `telemetry::DemoSource::read()`, or provide another
-`telemetry::Source` implementation. Keeping sensor access out
-of the HTTP task makes it possible to test and change the IMU independently of
-the transport and visualization.
+The MPU6050 integration uses SDA on GPIO 21 and SCL on GPIO 22. To support a
+different sensor, provide another `telemetry::Source` implementation. Keeping
+sensor access out of the HTTP task makes it possible to test and change the IMU
+independently of the transport and visualization.
 
 ## Known limitations
 

@@ -4,3 +4,9 @@
 [submodule "eigen"]
 	path = eigen
 	url = https://gitlab.com/libeigen/eigen.git
+[submodule "esp32-i2c_rw"]
+	path = esp32-i2c_rw
+	url = https://github.com/gepid-upf/esp32-i2c_rw.git
+[submodule "esp32-mpu6050"]
+	path = esp32-mpu6050
+	url = https://github.com/gepid-upf/esp32-mpu6050.git
